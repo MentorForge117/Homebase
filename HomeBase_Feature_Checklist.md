@@ -8,8 +8,7 @@ Current version: Alpha 3. Last updated: 2026-10-06.
 2. What did you expect to find that was not there?
 3. What felt slow, confusing, or annoying?
 4. Would you use it every day? What would make you?
-5. What would you pay for, if anything? (Do not offer to sell yet.)
-
+5. What would you pay for, if anything? 
 ## Calendar and schedules
 | ID | Feature | Status | My take | Feedback from others | Decision |
 |---|---|---|---|---|---|
