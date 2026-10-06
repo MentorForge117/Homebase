@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HomeBase">
+<meta name="theme-color" content="#ffffff">
+<title>HomeBase</title>
+<style>
+:root,[data-theme=ocean]{--bg:#eef4f9;--card:#fff;--ink:#16263a;--mute:#66788d;--line:#dbe5ee;--accent:#2f6f9f;--accent-ink:#fff;--soft:#e3eef7;--warn:#c0472f;--ok:#2e7d4f}
+[data-theme=forest]{--bg:#eef5ef;--card:#fff;--ink:#17301f;--mute:#62786a;--line:#d9e7dc;--accent:#2f7d4f;--accent-ink:#fff;--soft:#e1f0e5;--warn:#b5472f;--ok:#2e7d4f}
+[data-theme=sunset]{--bg:#fbf1ea;--card:#fffaf6;--ink:#35211a;--mute:#8a6a5c;--line:#f0dccf;--accent:#d2663a;--accent-ink:#fff;--soft:#fbe5d8;--warn:#b02e2e;--ok:#2e7d4f}
+[data-theme=lavender]{--bg:#f3f0fa;--card:#fff;--ink:#241d3a;--mute:#74698f;--line:#e2dcf0;--accent:#6c4fb3;--accent-ink:#fff;--soft:#e9e3f7;--warn:#b5472f;--ok:#2e7d4f}
+[data-theme=slate]{--bg:#14181f;--card:#1d232d;--ink:#e8ecf3;--mute:#98a2b5;--line:#2c3441;--accent:#7aa7d9;--accent-ink:#0e1218;--soft:#27303d;--warn:#ee8a76;--ok:#6fcf97}
+[data-theme=midnight]{--bg:#0b1220;--card:#121b2e;--ink:#e6f0ff;--mute:#8ea3c4;--line:#1f2d47;--accent:#3fc1c9;--accent-ink:#06151a;--soft:#18253f;--warn:#ff8e7a;--ok:#6fcf97}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header h1{font-size:18px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header select{max-width:38%}
+.gear{border:1px solid var(--line);background:none;color:var(--ink);border-radius:10px;min-height:42px;min-width:42px;font-size:18px;cursor:pointer}
+.gear.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+main{max-width:720px;margin:0 auto;padding:14px 14px calc(96px + env(safe-area-inset-bottom))}
+.tabbar{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:10}
+.tabbar button{border:0;background:none;color:var(--mute);padding:8px 2px 7px;font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-height:56px;position:relative}
+.tabbar button.on{color:var(--accent);font-weight:600}
+.tabbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.badge{position:absolute;top:4px;left:calc(50% + 6px);background:var(--warn);color:#fff;border-radius:99px;font-size:10px;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.card h2{font-size:12px;margin:0 0 10px;color:var(--mute);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+form.row{margin-bottom:10px}
+input,select,textarea,button.btn{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-height:42px;max-width:100%}
+textarea{width:100%;resize:vertical}
+input.grow{flex:1;min-width:120px}
+button.btn{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);cursor:pointer;font-weight:600}
+button.btn.ghost{background:none;color:var(--ink);border-color:var(--line);font-weight:400}
+button.btn.small{min-height:34px;padding:4px 10px;font-size:14px}
+button.x{border:0;background:none;color:var(--mute);cursor:pointer;font-size:20px;padding:4px 10px;min-height:40px}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+li:first-child{border-top:0}
+li .t{flex:1;min-width:0;overflow-wrap:anywhere}
+li.done .t{text-decoration:line-through;color:var(--mute)}
+.mute{color:var(--mute);font-size:14px}
+.chip{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;color:#fff;white-space:nowrap}
+.chip.cat{background:none;border:1px solid currentColor}
+.over{color:var(--warn)}
+.empty{color:var(--mute);font-style:italic}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.big{font-size:28px;font-weight:700}
+.bar{height:8px;border-radius:4px;background:var(--accent);margin:2px 0 8px}
+.note{background:var(--soft);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--mute);margin-top:10px}
+.grid2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.calhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.calhead h2{flex:1;margin:0;font-size:18px;text-transform:none;letter-spacing:0;color:var(--ink);text-align:center}
+.calhead button{min-width:42px}
+.dow,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.dow div{text-align:center;font-size:12px;color:var(--mute);padding-bottom:4px}
+.day{border:0;border-radius:10px;background:var(--bg);color:var(--ink);min-height:52px;padding:4px 2px;font:inherit;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.day.blank{background:none;cursor:default}
+.day.today{box-shadow:inset 0 0 0 2px var(--accent)}
+.day.sel{background:var(--accent);color:var(--accent-ink)}
+.dots{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;min-height:8px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.dot.t{border-radius:2px;background:none;border:2px solid currentColor;width:8px;height:8px}
+.dot.b{border-radius:2px;background:var(--ok)}
+.sel .dot{box-shadow:0 0 0 1px var(--accent-ink)}
+.banner{display:block;width:100%;text-align:left;border:1px solid var(--warn);color:var(--warn);background:none;border-radius:10px;padding:8px 12px;margin-bottom:12px;font:inherit;cursor:pointer}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.pill{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;cursor:pointer;min-height:38px}
+.pill.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.theme{border:2px solid var(--line);border-radius:12px;padding:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+.theme.on{border-color:var(--accent)}
+.theme i{display:block;height:22px;border-radius:6px;margin-bottom:6px}
+.post{border-top:1px solid var(--line);padding:12px 0}
+.post:first-child{border-top:0}
+.post.pin{background:var(--soft);border-radius:10px;padding:12px;margin-bottom:6px;border-top:0}
+.post .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.post .body{white-space:pre-wrap;overflow-wrap:anywhere}
+.post .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+details{border-top:1px solid var(--line);padding:8px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:600;padding:6px 0}
+details p,details ol{margin:6px 0;font-size:14px;color:var(--mute)}
+details ol{padding-left:20px}
+</style>
+</head>
+<body>
+<header><h1 id="title">HomeBase</h1><select id="actor" aria-label="Who is using this phone"></select><button class="gear" id="gear" aria-label="Settings and help">⚙</button></header>
+<main id="view"></main>
+<nav class="tabbar" id="tabs"></nav>
+
+<script>
+"use strict";
+/* ============ helpers ============ */
+const KEY = "homebase.v1", DEV = "homebase.device", SCHEMA = 3;
+const COLORS = ["#2f6f9f","#c0472f","#2f7d4f","#a8742f","#6c4fb3","#2f8a86","#b34f7a","#6b7a2f"];
+const CATS = { Family: "#2f7d4f", Work: "#2f6f9f", School: "#a8742f", Appointment: "#b34f7a", Other: "#6b7a8f" };
+const REPS = [["", "Does not repeat"], ["daily", "Daily"], ["weekly", "Weekly"], ["monthly", "Monthly"], ["yearly", "Yearly"]];
+const THEMES = [["ocean","Ocean","#2f6f9f"],["forest","Forest","#2f7d4f"],["sunset","Sunset","#d2663a"],["lavender","Lavender","#6c4fb3"],["slate","Slate","#7aa7d9"],["midnight","Midnight","#3fc1c9"]];
+const COLL = ["members","tasks","events","lists","items","expenses","bills","posts"];
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+const ymd = d => d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+const today = () => ymd(new Date());
+const parse = s => new Date(s + "T00:00:00");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money = n => "$" + (Math.round(n * 100) / 100).toFixed(2);
+const now = () => Date.now();
+const daysIn = (y, m) => new Date(y, m + 1, 0).getDate();
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return ymd(d); };
+const utcDays = s => { const [y, m, d] = s.split("-").map(Number); return Math.floor(Date.UTC(y, m - 1, d) / 864e5); };
+
+/* repeat engine: all dates (YYYY-MM-DD) an item falls on between a and b inclusive */
+function occ(base, rep, a, b) {
+  if (!base) return [];
+  if (!rep) return base >= a && base <= b ? [base] : [];
+  const out = [];
+  if (rep === "daily" || rep === "weekly") {
+    const step = rep === "daily" ? 1 : 7, b0 = utcDays(base);
+    let k = Math.max(0, Math.ceil((utcDays(a) - b0) / step));
+    for (let d = addDays(base, k * step); d <= b && out.length < 400; d = addDays(d, step)) out.push(d);
+    return out;
+  }
+  const bd = parse(base);
+  for (let k = 0; k < 1200; k++) {
+    const y = bd.getFullYear() + (rep === "yearly" ? k : 0), m = rep === "yearly" ? bd.getMonth() : bd.getMonth() + k;
+    const dim = daysIn(y, m), d = new Date(y, m, Math.min(bd.getDate(), dim)), s = ymd(d);
+    if (s > b) break; if (s >= a) out.push(s);
+  }
+  return out;
+}
+const nextAfter = (due, rep, after) => occ(due, rep, addDays(after, 1), addDays(after, 800))[0] || addDays(after, 1);
+
+/* ============ storage ============ */
+let warn = false;
+function blank() {
+  return { schema: SCHEMA, app: "homebase", created: new Date().toISOString(), household: { name: "My Household", u: now() },
+    members: [], tasks: [], events: [], lists: [], items: [], expenses: [], bills: [], posts: [], activity: [], modules: {} };
+}
+function migrate(d) {
+  if (!d || d.app !== "homebase") throw new Error("not homebase data");
+  const t = now();
+  d.modules ||= {}; d.activity ||= [];
+  d.household ||= { name: "My Household" }; d.household.u ||= 0;
+  if (d.schema < 2 || d.shopping) {
+    d.lists ||= []; d.items ||= [];
+    if (d.shopping?.length) {
+      if (!d.lists.find(l => l.id === "shopping")) d.lists.push({ id: "shopping", name: "Shopping", u: t });
+      d.shopping.forEach(i => d.items.push({ id: i.id, list: "shopping", title: i.title, qty: i.qty || "", done: !!i.done, u: t }));
+    }
+    delete d.shopping; delete d.actor;
+  }
+  d.schema = SCHEMA;
+  for (const k of COLL) { d[k] ||= []; d[k].forEach(x => { x.u ||= 0; }); }
+  return d;
+}
+let S, DEVICE = { actor: null, theme: null };
+const L = k => S[k].filter(x => !x.del);
+const member = id => S.members.find(m => m.id === id && !m.del);
+const mName = id => member(id)?.name ?? "Anyone";
+const chip = id => { const m = member(id); return m ? `<span class="chip" style="background:${m.color}">${esc(m.name)}</span>` : ""; };
+const catChip = c => `<span class="chip cat" style="color:${CATS[c] || CATS.Other}">${esc(c || "Other")}</span>`;
+const stamp = x => { x.u = now(); return x; };
+const kill = x => { x.del = true; stamp(x); };
+function ensureBasics() {
+  if (!L("members").length) S.members.push({ id: uid(), name: "Me", color: COLORS[0], u: now() });
+  if (!L("lists").length) S.lists.push({ id: "shopping", name: "Groceries", u: now() });
+  if (!member(DEVICE.actor)) DEVICE.actor = L("members")[0].id;
+}
+function loadAll() {
+  try { const r = localStorage.getItem(KEY); S = r ? migrate(JSON.parse(r)) : blank(); } catch (e) { S = blank(); warn = true; }
+  try { Object.assign(DEVICE, JSON.parse(localStorage.getItem(DEV) || "{}")); } catch (e) {}
+  ensureBasics();
+  if (!DEVICE.theme) DEVICE.theme = matchMedia("(prefers-color-scheme: dark)").matches ? "midnight" : "ocean";
+}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { warn = true; } };
+const saveDev = () => { try { localStorage.setItem(DEV, JSON.stringify(DEVICE)); } catch (e) {} };
+function log(text) { S.activity.unshift({ id: uid(), at: new Date().toISOString(), by: DEVICE.actor, text }); S.activity = S.activity.slice(0, 200); }
+let focusSel = null;
+function commit(text, focus) { if (text) log(text); stamp(S.household); save(); focusSel = focus || null; render(); }
+const memberOptions = (sel, any = true, anyLabel = "Anyone") => (any ? `<option value="">${anyLabel}</option>` : "") + L("members").map(m => `<option value="${m.id}" ${m.id === sel ? "selected" : ""}>${esc(m.name)}</option>`).join("");
+const repOptions = sel => REPS.map(([v, n]) => `<option value="${v}" ${v === sel ? "selected" : ""}>${n}</option>`).join("");
+const catOptions = sel => Object.keys(CATS).map(c => `<option ${c === sel ? "selected" : ""}>${c}</option>`).join("");
+
+/* merge another phone's backup: newest change per item wins, deletes carry over */
+function mergeData(remote) {
+  remote = migrate(remote);
+  let added = 0, updated = 0;
+  for (const k of COLL) {
+    const map = new Map(S[k].map(x => [x.id, x]));
+    for (const r of remote[k]) {
+      const l = map.get(r.id);
+      if (!l) { S[k].push(r); added++; }
+      else if ((r.u || 0) > (l.u || 0)) { Object.keys(l).forEach(p => delete l[p]); Object.assign(l, r); updated++; }
+    }
+  }
+  const have = new Set(S.activity.map(a => a.id));
+  remote.activity.forEach(a => { if (!have.has(a.id)) S.activity.push(a); });
+  S.activity.sort((a, b) => b.at.localeCompare(a.at)); S.activity = S.activity.slice(0, 200);
+  if ((remote.household.u || 0) > (S.household.u || 0)) S.household = remote.household;
+  ensureBasics();
+  return { added, updated };
+}
+
+/* ============ sharing ============ */
+async function shareText(text) {
+  if (navigator.share) { try { await navigator.share({ text }); return; } catch (e) { if (e.name === "AbortError") return; } }
+  try { await navigator.clipboard.writeText(text); alert("Copied. Paste it into a message."); } catch (e) { prompt("Copy this text:", text); }
+}
+function backupBlob() { return new Blob([JSON.stringify(S, null, 2)], { type: "application/json" }); }
+function downloadBackup() {
+  const link = document.createElement("a"); link.href = URL.createObjectURL(backupBlob());
+  link.download = `homebase-backup-${today()}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+async function shareBackup() {
+  const f = new File([backupBlob()], `homebase-${today()}.json`, { type: "application/json" });
+  if (navigator.canShare?.({ files: [f] })) { try { await navigator.share({ files: [f], title: "HomeBase update" }); return; } catch (e) { if (e.name === "AbortError") return; } }
+  downloadBackup();
+}
+
+/* what is on a given day */
+function itemsOn(d, who) {
+  const mine = x => !who || !x.who || x.who === who;
+  const e = L("events").filter(mine).filter(x => occ(x.date, x.rep, d, d).length).map(x => ({ ...x, _d: d }));
+  const b = L("bills").filter(mine).filter(x => occ(x.date, x.rep, d, d).length).map(x => ({ bill: x, d, paid: !!x.paid?.[d] }));
+  const t = L("tasks").filter(mine).filter(x => x.due === d);
+  e.sort((p, q) => (p.time || "").localeCompare(q.time || ""));
+  return { e, b, t };
+}
+function updateText() {
+  const t = today(), who = null;
+  const it = itemsOn(t);
+  const lines = [`${S.household.name}: ${new Date().toLocaleDateString([], { weekday: "long", month: "short", day: "numeric" })}`];
+  if (it.e.length) { lines.push("", "Today:"); it.e.forEach(e => lines.push(`• ${e.time ? e.time + " " : ""}${e.title}${e.who ? " (" + mName(e.who) + ")" : ""}`)); }
+  const bills = it.b.filter(x => !x.paid); if (bills.length) { lines.push("", "Bills due:"); bills.forEach(x => lines.push(`• ${x.bill.title} ${money(x.bill.amount)}`)); }
+  const tasks = L("tasks").filter(x => !x.done && x.due && x.due <= t); if (tasks.length) { lines.push("", "Tasks due or overdue:"); tasks.forEach(x => lines.push(`• ${x.title}${x.who ? " (" + mName(x.who) + ")" : ""}`)); }
+  const asks = L("posts").filter(p => p.kind === "ask" && !p.done); if (asks.length) { lines.push("", "Open questions:"); asks.forEach(p => lines.push(`• ${p.text}${p.to ? " (for " + mName(p.to) + ")" : ""}`)); }
+  if (lines.length === 1) lines.push("", "Nothing scheduled today.");
+  return lines.join("\n");
+}
+const pendingForMe = () => L("posts").filter(p => p.kind === "ask" && !p.done && p.by !== DEVICE.actor && (!p.to || p.to === DEVICE.actor) && !p.acks?.[DEVICE.actor]).length;
+
+/* ============ views ============ */
+const ICON = {
+  cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  list: '<path d="M9 6h11M9 12h11M9 18h11M3.5 6l1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>',
+  task: '<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+  money: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/>',
+  board: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'
+};
+let tab = "calendar", viewY, viewM, selDay = today(), selList = null, fWho = "", todoWho = "", moneySub = "bills", showMore = false;
+{ const d = new Date(); viewY = d.getFullYear(); viewM = d.getMonth(); }
+
+const TABS = [
+  { id: "calendar", label: "Calendar", icon: ICON.cal, render: vCalendar },
+  { id: "lists", label: "Lists", icon: ICON.list, render: vLists },
+  { id: "tasks", label: "To-do", icon: ICON.task, render: vTasks },
+  { id: "money", label: "Bills", icon: ICON.money, render: vMoney },
+  { id: "board", label: "Board", icon: ICON.board, render: vBoard }
+]; /* later modules (HomeVault) can be added here */
+
+function vCalendar() {
+  const t = today();
+  const first = new Date(viewY, viewM, 1), dim = daysIn(viewY, viewM);
+  const a = ymd(first), b = ymd(new Date(viewY, viewM, dim));
+  const mine = x => !fWho || !x.who || x.who === fWho;
+  const byDay = {}; const slot = d => (byDay[d] ||= { e: [], b: 0, t: 0 });
+  L("events").filter(mine).forEach(e => occ(e.date, e.rep, a, b).forEach(d => slot(d).e.push(e)));
+  L("bills").filter(mine).forEach(x => occ(x.date, x.rep, a, b).forEach(d => { slot(d).b++; }));
+  L("tasks").filter(mine).filter(x => x.due && !x.done && x.due >= a && x.due <= b).forEach(x => slot(x.due).t++);
+  let cells = "";
+  for (let i = 0; i < first.getDay(); i++) cells += `<div class="day blank"></div>`;
+  for (let d = 1; d <= dim; d++) {
+    const ds = ymd(new Date(viewY, viewM, d)), s = byDay[ds];
+    const dots = s ? [...s.e.slice(0, 3).map(e => `<span class="dot" style="background:${CATS[e.cat] || CATS.Other}"></span>`), ...(s.b ? [`<span class="dot b"></span>`] : []), ...(s.t ? [`<span class="dot t"></span>`] : [])].join("") : "";
+    cells += `<button class="day ${ds === t ? "today" : ""} ${ds === selDay ? "sel" : ""}" data-act="pick-day" data-day="${ds}"><span>${d}</span><span class="dots">${dots}</span></button>`;
+  }
+  const it = itemsOn(selDay, fWho);
+  const overdue = L("tasks").filter(x => !x.done && x.due && x.due < t).length;
+  const unpaid = L("bills").filter(x => occ(x.date, x.rep, addDays(t, -7), addDays(t, -1)).some(d => !x.paid?.[d])).length;
+  const pretty = parse(selDay).toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
+  const asks = pendingForMe();
+  return `${asks ? `<button class="banner" data-act="goto" data-tab="board">${asks} question${asks > 1 ? "s" : ""} waiting for you on the Board.</button>` : ""}
+  ${overdue ? `<button class="banner" data-act="goto" data-tab="tasks">${overdue} overdue task${overdue > 1 ? "s" : ""}. Tap to view.</button>` : ""}
+  ${unpaid ? `<button class="banner" data-act="goto" data-tab="money">${unpaid} bill${unpaid > 1 ? "s" : ""} past due in the last week.</button>` : ""}
+  <div class="pills"><button class="pill ${!fWho ? "on" : ""}" data-act="who" data-id="">Everyone</button>${L("members").map(m => `<button class="pill ${fWho === m.id ? "on" : ""}" data-act="who" data-id="${m.id}">${esc(m.name)}</button>`).join("")}</div>
+  <div class="card">
+    <div class="calhead"><button class="btn ghost" data-act="month" data-d="-1" aria-label="Previous month">‹</button>
+    <h2>${first.toLocaleDateString([], { month: "long", year: "numeric" })}</h2>
+    <button class="btn ghost" data-act="month" data-d="1" aria-label="Next month">›</button></div>
+    <div class="dow">${["S","M","T","W","T","F","S"].map(x => `<div>${x}</div>`).join("")}</div>
+    <div class="days">${cells}</div>
+    <div class="row" style="margin-top:8px"><button class="btn ghost small" data-act="today">Today</button><button class="btn ghost small" data-act="share-update">Share today's update</button><span class="mute">● event ■ bill ☐ task</span></div>
+  </div>
+  <div class="card"><h2>${esc(pretty)}</h2>
+    ${it.e.length || it.b.length || it.t.length ? `<ul>
+      ${it.e.map(e => `<li><span class="t">${esc(e.title)}${e.time ? ` <span class="mute">${esc(e.time)}</span>` : ""}${e.rep ? ` <span class="mute">↻</span>` : ""}</span>${catChip(e.cat)}${chip(e.who)}<button class="x" data-act="event-del" data-id="${e.id}" aria-label="Delete event">×</button></li>`).join("")}
+      ${it.b.map(x => `<li class="${x.paid ? "done" : ""}"><input type="checkbox" data-act="bill-paid" data-id="${x.bill.id}" data-d="${x.d}" ${x.paid ? "checked" : ""} aria-label="Paid"><span class="t">${esc(x.bill.title)} <span class="mute">bill ${money(x.bill.amount)}</span></span>${chip(x.bill.who)}</li>`).join("")}
+      ${it.t.map(x => `<li class="${x.done ? "done" : ""}"><input type="checkbox" data-act="task-toggle" data-id="${x.id}" ${x.done ? "checked" : ""} aria-label="Done"><span class="t">${esc(x.title)} <span class="mute">to-do${x.rep ? " ↻" : ""}</span></span>${chip(x.who)}</li>`).join("")}
+    </ul>` : `<div class="empty">Nothing on this day.</div>`}
+    <h2 style="margin-top:14px">Add to this day</h2>
+    <form class="row" data-form="event"><input class="grow" type="text" name="title" placeholder="Event: work shift, practice, appointment…" required>
+      <input type="time" name="time"><select name="cat">${catOptions("Family")}</select>
+      <select name="who">${memberOptions("")}</select><select name="rep">${repOptions("")}</select><button class="btn">Add event</button></form>
+    <form class="row" data-form="daytask"><input class="grow" type="text" name="title" placeholder="Chore or to-do for this day" required>
+      <select name="who">${memberOptions("")}</select><select name="rep">${repOptions("")}</select><button class="btn">Add to-do</button></form>
+  </div>`;
+}
+
+function vLists() {
+  const lists = L("lists");
+  if (!lists.find(l => l.id === selList)) selList = lists[0]?.id;
+  const items = L("items").filter(i => i.list === selList).sort((a, b) => (a.done - b.done) || a.u - b.u);
+  const left = items.filter(i => !i.done).length;
+  return `<div class="pills">${lists.map(l => `<button class="pill ${l.id === selList ? "on" : ""}" data-act="pick-list" data-id="${l.id}">${esc(l.name)}</button>`).join("")}</div>
+  <div class="card">
+    <h2>${esc(lists.find(l => l.id === selList)?.name || "")} · ${left} left</h2>
+    <form class="row" data-form="item"><input class="grow" type="text" name="title" placeholder="Add item" required autocomplete="off"><input type="text" name="qty" placeholder="Qty" size="4"><button class="btn">Add</button></form>
+    ${items.length ? `<ul>${items.map(i => `<li class="${i.done ? "done" : ""}"><input type="checkbox" data-act="item-toggle" data-id="${i.id}" ${i.done ? "checked" : ""} aria-label="Check"><span class="t">${esc(i.title)}${i.qty ? ` <span class="mute">× ${esc(i.qty)}</span>` : ""}</span><button class="x" data-act="item-del" data-id="${i.id}" aria-label="Delete">×</button></li>`).join("")}</ul>` : `<div class="empty">Empty list.</div>`}
+    <div class="row" style="margin-top:10px"><button class="btn ghost small" data-act="items-clear">Clear checked</button><button class="btn ghost small" data-act="items-reset">Uncheck all</button><button class="btn ghost small" data-act="list-share">Share list</button><button class="btn ghost small" data-act="list-del">Delete list</button></div>
+  </div>
+  <div class="card"><h2>New list</h2>
+    <form class="row" data-form="list"><input class="grow" type="text" name="name" placeholder="e.g. Costco, Packing, School supplies, Morning routine" required><button class="btn">Create</button></form></div>`;
+}
+
+function vTasks() {
+  const t = today();
+  let list = L("tasks"); if (todoWho) list = list.filter(x => x.who === todoWho);
+  list = [...list].sort((a, b) => (a.done - b.done) || ((a.due || "9999").localeCompare(b.due || "9999")));
+  return `<div class="pills"><button class="pill ${!todoWho ? "on" : ""}" data-act="todo-who" data-id="">Everyone</button><button class="pill ${todoWho === DEVICE.actor ? "on" : ""}" data-act="todo-who" data-id="${DEVICE.actor}">Mine</button>${L("members").filter(m => m.id !== DEVICE.actor).map(m => `<button class="pill ${todoWho === m.id ? "on" : ""}" data-act="todo-who" data-id="${m.id}">${esc(m.name)}</button>`).join("")}</div>
+  <div class="card"><h2>Add chore or to-do</h2>
+    <form class="row" data-form="task"><input class="grow" type="text" name="title" placeholder="What needs doing?" required>
+    <select name="who">${memberOptions("")}</select><input type="date" name="due"><select name="rep">${repOptions("")}</select><button class="btn">Add</button></form>
+    <div class="note" style="margin-top:0;margin-bottom:8px">Repeating chores move to their next date when you check them off.</div>
+    ${list.length ? `<ul>${list.map(x => `<li class="${x.done ? "done" : ""}"><input type="checkbox" data-act="task-toggle" data-id="${x.id}" ${x.done ? "checked" : ""} aria-label="Done"><span class="t">${esc(x.title)}${x.due ? ` <span class="mute ${!x.done && x.due < t ? "over" : ""}">${esc(x.due)}</span>` : ""}${x.rep ? ` <span class="mute">↻ ${x.rep}</span>` : ""}</span>${chip(x.who)}<button class="x" data-act="task-del" data-id="${x.id}" aria-label="Delete">×</button></li>`).join("")}</ul>` : `<div class="empty">Nothing here.</div>`}</div>`;
+}
+
+function vMoney() {
+  const sub = `<div class="pills"><button class="pill ${moneySub === "bills" ? "on" : ""}" data-act="msub" data-id="bills">Bills</button><button class="pill ${moneySub === "spend" ? "on" : ""}" data-act="msub" data-id="spend">Spending</button></div>`;
+  return sub + (moneySub === "bills" ? vBills() : vSpend());
+}
+function vBills() {
+  const t = today(), from = addDays(t, -35), to = addDays(t, 45);
+  const rows = [];
+  L("bills").forEach(x => occ(x.date, x.rep, from, to).forEach(d => rows.push({ bill: x, d, paid: !!x.paid?.[d] })));
+  rows.sort((p, q) => p.d.localeCompare(q.d));
+  const shown = rows.filter(r => !r.paid ? true : r.d >= addDays(t, -7));
+  const due30 = rows.filter(r => !r.paid && r.d >= t && r.d <= addDays(t, 30)).reduce((s, r) => s + r.bill.amount, 0);
+  const late = rows.filter(r => !r.paid && r.d < t);
+  return `<div class="grid2"><div class="card"><h2>Due next 30 days</h2><div class="big">${money(due30)}</div></div>
+    <div class="card"><h2>Past due</h2><div class="big ${late.length ? "over" : ""}">${late.length}</div></div></div>
+  <div class="card"><h2>Add bill</h2>
+    <form class="row" data-form="bill"><input class="grow" type="text" name="title" placeholder="Bill (rent, power, phone…)" required>
+    <input type="number" name="amount" step="0.01" min="0" inputmode="decimal" placeholder="Amount" required style="width:110px">
+    <input type="date" name="date" value="${t}" required><select name="rep">${repOptions("monthly")}</select>
+    <select name="who">${memberOptions("", true, "Whoever")}</select><button class="btn">Add</button></form>
+    <div class="note" style="margin-top:0">Checking a bill as paid also logs it under Spending. Amounts are for your own tracking.</div></div>
+  <div class="card"><h2>Bills</h2>${shown.length ? `<ul>${shown.map(r => `<li class="${r.paid ? "done" : ""}"><input type="checkbox" data-act="bill-paid" data-id="${r.bill.id}" data-d="${r.d}" ${r.paid ? "checked" : ""} aria-label="Paid"><span class="t">${esc(r.bill.title)} ${money(r.bill.amount)}<div class="mute ${!r.paid && r.d < t ? "over" : ""}">${r.d < t && !r.paid ? "past due " : "due "}${esc(r.d)}</div></span>${chip(r.bill.who)}</li>`).join("")}</ul>` : `<div class="empty">No bills yet.</div>`}</div>
+  ${L("bills").length ? `<div class="card"><h2>Manage</h2><ul>${L("bills").map(x => `<li><span class="t">${esc(x.title)} ${money(x.amount)}<div class="mute">${x.rep || "one time"} from ${esc(x.date)}</div></span><button class="x" data-act="bill-del" data-id="${x.id}" aria-label="Delete bill">×</button></li>`).join("")}</ul></div>` : ""}`;
+}
+function vSpend() {
+  const mon = today().slice(0, 7), ex = L("expenses");
+  const cur = ex.filter(e => e.date.startsWith(mon));
+  const total = cur.reduce((a, e) => a + e.amount, 0);
+  const by = key => { const m = {}; cur.forEach(e => { const k = e[key] || ""; m[k] = (m[k] || 0) + e.amount; }); return Object.entries(m).sort((a, b) => b[1] - a[1]); };
+  const bars = (rows, label) => rows.length ? rows.map(([k, v]) => `<div>${esc(label(k))} <span class="mute">${money(v)}</span><div class="bar" style="width:${total ? Math.max(2, v / total * 100) : 0}%"></div></div>`).join("") : `<div class="empty">No spending this month.</div>`;
+  const list = [...ex].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 50);
+  return `<div class="card"><h2>Add expense</h2>
+    <form class="row" data-form="expense"><input type="number" name="amount" step="0.01" min="0.01" inputmode="decimal" placeholder="Amount" required style="width:110px">
+    <input class="grow" type="text" name="cat" placeholder="Category" list="cats">
+    <datalist id="cats">${[...new Set(ex.map(e => e.cat).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join("")}</datalist>
+    <select name="who">${memberOptions(DEVICE.actor, false)}</select><input type="date" name="date" value="${today()}" required>
+    <input class="grow" type="text" name="note" placeholder="Note (optional)"><button class="btn">Add</button></form></div>
+    <div class="card"><h2>This month</h2><div class="big">${money(total)}</div></div>
+    <div class="grid2"><div class="card"><h2>By category</h2>${bars(by("cat"), k => k || "Uncategorized")}</div>
+    <div class="card"><h2>By member</h2>${bars(by("who"), k => mName(k))}</div></div>
+    <div class="card"><h2>Recent</h2>${list.length ? `<ul>${list.map(e => `<li><span class="t">${money(e.amount)} ${esc(e.cat || "Uncategorized")}<div class="mute">${esc(e.date)}${e.note ? " · " + esc(e.note) : ""}</div></span>${chip(e.who)}<button class="x" data-act="exp-del" data-id="${e.id}" aria-label="Delete">×</button></li>`).join("")}</ul>` : `<div class="empty">No expenses yet.</div>`}</div>`;
+}
+
+const TEMPLATES = ["Running late", "Dinner at ___?", "Can you pick up ___?", "We need ___", "Who is covering ___?", "Reminder: ___"];
+function vBoard() {
+  const posts = [...L("posts")].sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || b.at.localeCompare(a.at));
+  const me = DEVICE.actor;
+  const card = p => {
+    const ackers = Object.keys(p.acks || {}).filter(id => member(id)).map(mName);
+    const canAck = p.by !== me && !p.acks?.[me];
+    return `<div class="post ${p.pin ? "pin" : ""}">
+      <div class="meta">${chip(p.by)}${p.kind === "ask" ? `<span class="chip" style="background:var(--warn)">${p.done ? "answered" : "question"}${p.to ? " for " + esc(mName(p.to)) : ""}</span>` : ""}<span class="mute">${new Date(p.at).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span></div>
+      <div class="body ${p.done ? "mute" : ""}">${esc(p.text)}</div>
+      <div class="acts">
+        ${canAck ? `<button class="btn small" data-act="ack" data-id="${p.id}">Got it</button>` : ""}
+        ${p.kind === "ask" && !p.done ? `<button class="btn ghost small" data-act="post-done" data-id="${p.id}">Mark answered</button>` : ""}
+        <button class="btn ghost small" data-act="pin" data-id="${p.id}">${p.pin ? "Unpin" : "Pin"}</button>
+        ${p.by === me ? `<button class="btn ghost small" data-act="post-del" data-id="${p.id}">Delete</button>` : ""}
+        ${ackers.length ? `<span class="mute">Seen by ${esc(ackers.join(", "))}</span>` : ""}
+      </div></div>`;
+  };
+  return `<div class="card"><h2>Post to the household</h2>
+    <form data-form="post"><textarea name="text" rows="2" placeholder="Write a note, or ask a question" required></textarea>
+    <div class="row" style="margin-top:8px"><select name="kind"><option value="note">Note</option><option value="ask">Question (needs an answer)</option></select>
+    <select name="to">${memberOptions("", true, "To everyone")}</select><button class="btn">Post</button></div></form>
+    <div class="pills" style="margin-top:10px;margin-bottom:0">${TEMPLATES.map(t => `<button class="pill" data-act="tpl" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>
+  <div class="card"><h2>Board</h2>${posts.length ? posts.map(card).join("") : `<div class="empty">No posts yet. Questions you ask show as a badge on the other person's Board tab.</div>`}</div>`;
+}
+
+const HELP = `
+<details open><summary>Best setup: a free link, then add to home screen</summary>
+<p>A file saved on a phone is awkward to reopen and some phones clear its data. A link to the app works the same on every device. The app contains no personal data. Your household data stays on each device.</p></details>
+<details><summary>Android phone or tablet (Chrome)</summary><ol><li>Open the link in Chrome.</li><li>Tap the ⋮ menu.</li><li>Tap Add to Home screen (or Install app).</li><li>Open it from the new icon. Pick who you are from the menu at the top.</li></ol></details>
+<details><summary>iPhone or iPad (Safari)</summary><ol><li>Open the link in Safari.</li><li>Tap the Share button.</li><li>Tap Add to Home Screen, then Add.</li><li>Always open it from the home screen icon. Set up your household there, not in a Safari tab, because the two keep separate data.</li></ol></details>
+<details><summary>Laptop (Chrome, Edge, Firefox, Safari)</summary><ol><li>Open the link, or double-click the homebase.html file.</li><li>Do not use a private or incognito window; it forgets everything.</li><li>Bookmark it. Chrome and Edge can also Install it from the address bar.</li></ol></details>
+<details><summary>Keeping data safe</summary><p>Data lives in the browser on that device. Clearing browsing data erases it. Export a backup now and then.</p></details>
+<details><summary>Sharing between phones</summary><ol><li>On one phone, tap Send my changes and pick a message app.</li><li>On the other phone, open the file and choose it under Merge, or save it and use Merge from file.</li><li>Both phones end up with the newest version of each item.</li></ol></details>`;
+
+function vMore() {
+  const act = S.activity.slice(0, 15);
+  return `<div class="card"><h2>Theme (this device)</h2><div class="themes">${THEMES.map(([id, n, c]) => `<button class="theme ${DEVICE.theme === id ? "on" : ""}" data-act="theme" data-id="${id}"><i style="background:${c}"></i>${n}</button>`).join("")}</div></div>
+  <div class="card"><h2>Household</h2>
+    <form class="row" data-form="hhname"><input class="grow" type="text" name="name" value="${esc(S.household.name)}" required><button class="btn ghost">Rename</button></form>
+    <form class="row" data-form="member"><input class="grow" type="text" name="name" placeholder="Add a member" required><button class="btn">Add</button></form>
+    <ul>${L("members").map(m => `<li><span class="chip" style="background:${m.color}">${esc(m.name)}</span><span class="t mute">${m.id === DEVICE.actor ? "this device" : ""}</span>${L("members").length > 1 ? `<button class="x" data-act="member-del" data-id="${m.id}" aria-label="Remove">×</button>` : ""}</li>`).join("")}</ul>
+    <div class="note">Pick who is using this device from the menu at the top.</div></div>
+  <div class="card"><h2>Share between devices</h2>
+    <p class="mute" style="margin-top:0">There is no live sync yet. Send your changes, and the other person merges them. The newest edit to each item wins.</p>
+    <div class="row"><button class="btn" data-act="share-backup">Send my changes</button><button class="btn ghost" data-act="export">Save backup file</button></div>
+    <p class="mute">Merge a file from another device:</p><input type="file" id="mergeFile" accept=".json,application/json">
+    <p class="mute">Replace everything with a backup:</p><input type="file" id="importFile" accept=".json,application/json">
+    ${warn ? `<div class="note">Browser storage is blocked here, so changes are not saved. Save a backup before leaving.</div>` : ""}</div>
+  <div class="card"><h2>Help: set up on each device</h2>${HELP}</div>
+  <div class="card"><h2>Recent activity</h2>${act.length ? `<ul>${act.map(x => `<li><span class="t">${esc(x.text)}</span><span class="mute">${esc(mName(x.by))}</span></li>`).join("")}</ul>` : `<div class="empty">Nothing yet.</div>`}</div>
+  <div class="card"><h2>Reset</h2><button class="btn ghost" data-act="reset">Erase all data on this device</button></div>`;
+}
+
+/* ============ shell ============ */
+function render() {
+  document.documentElement.dataset.theme = DEVICE.theme;
+  const tc = document.querySelector("meta[name=theme-color]"); if (tc) tc.content = getComputedStyle(document.documentElement).getPropertyValue("--card").trim() || "#fff";
+  document.getElementById("title").textContent = S.household.name;
+  document.title = S.household.name;
+  document.getElementById("actor").innerHTML = memberOptions(DEVICE.actor, false);
+  document.getElementById("gear").className = "gear" + (showMore ? " on" : "");
+  const n = pendingForMe();
+  document.getElementById("tabs").innerHTML = TABS.map(t => `<button class="${!showMore && t.id === tab ? "on" : ""}" data-tab="${t.id}"><svg viewBox="0 0 24 24">${t.icon}</svg>${t.label}${t.id === "board" && n ? `<span class="badge">${n}</span>` : ""}</button>`).join("");
+  document.getElementById("view").innerHTML = showMore ? vMore() : TABS.find(t => t.id === tab).render();
+  if (focusSel) document.querySelector(focusSel)?.focus();
+}
+const go = id => { tab = id; showMore = false; window.scrollTo(0, 0); render(); };
+document.getElementById("tabs").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) go(b.dataset.tab); });
+document.getElementById("gear").addEventListener("click", () => { showMore = !showMore; window.scrollTo(0, 0); render(); });
+document.getElementById("actor").addEventListener("change", e => { DEVICE.actor = e.target.value; saveDev(); render(); });
+
+document.getElementById("view").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = e.target, k = f.dataset.form, v = Object.fromEntries(new FormData(f));
+  const text = (v.title || v.text || "").trim(), A = DEVICE.actor;
+  if (k === "task") { S.tasks.push(stamp({ id: uid(), title: text, who: v.who, due: v.due, rep: v.rep, done: false, by: A })); commit(`Added to-do “${text}”`); }
+  else if (k === "daytask") { S.tasks.push(stamp({ id: uid(), title: text, who: v.who, due: selDay, rep: v.rep, done: false, by: A })); commit(`Added to-do “${text}”`); }
+  else if (k === "event") { S.events.push(stamp({ id: uid(), title: text, date: selDay, time: v.time, cat: v.cat, who: v.who, rep: v.rep })); commit(`Added event “${text}”`); }
+  else if (k === "bill") { S.bills.push(stamp({ id: uid(), title: text, amount: parseFloat(v.amount) || 0, date: v.date, rep: v.rep, who: v.who, paid: {} })); commit(`Added bill “${text}”`); }
+  else if (k === "post") { S.posts.push(stamp({ id: uid(), text, by: A, at: new Date().toISOString(), kind: v.kind, to: v.to, pin: false, done: false, acks: {} })); commit(v.kind === "ask" ? `Asked: ${text.slice(0, 40)}` : ""); }
+  else if (k === "item") { S.items.push(stamp({ id: uid(), list: selList, title: text, qty: (v.qty || "").trim(), done: false })); commit("", "form[data-form=item] input[name=title]"); }
+  else if (k === "list") { const l = stamp({ id: uid(), name: v.name.trim() }); S.lists.push(l); selList = l.id; commit(`Created list “${l.name}”`, "form[data-form=item] input[name=title]"); }
+  else if (k === "expense") { const amt = parseFloat(v.amount); if (!(amt > 0)) return; S.expenses.push(stamp({ id: uid(), amount: amt, cat: (v.cat || "").trim(), who: v.who, date: v.date, note: (v.note || "").trim() })); commit(`Logged ${money(amt)} ${v.cat || "expense"}`); }
+  else if (k === "member") { const n = v.name.trim(); S.members.push(stamp({ id: uid(), name: n, color: COLORS[S.members.length % COLORS.length] })); commit(`Added member ${n}`); }
+  else if (k === "hhname") { S.household.name = v.name.trim(); commit("Renamed household"); }
+});
+
+document.getElementById("view").addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const a = b.dataset.act, id = b.dataset.id;
+  const find = arr => S[arr].find(x => x.id === id);
+  if (a === "pick-day") { selDay = b.dataset.day; commit(); }
+  else if (a === "who") { fWho = id; render(); }
+  else if (a === "todo-who") { todoWho = id; render(); }
+  else if (a === "msub") { moneySub = id; render(); }
+  else if (a === "month") { const d = new Date(viewY, viewM + +b.dataset.d, 1); viewY = d.getFullYear(); viewM = d.getMonth(); render(); }
+  else if (a === "today") { const d = new Date(); viewY = d.getFullYear(); viewM = d.getMonth(); selDay = today(); render(); }
+  else if (a === "goto") go(b.dataset.tab);
+  else if (a === "share-update") shareText(updateText());
+  else if (a === "task-toggle") {
+    const t = find("tasks");
+    if (t.rep && !t.done) { const old = t.due || today(); t.due = nextAfter(old, t.rep, today() > old ? today() : old); stamp(t); commit(`Did “${t.title}” (next ${t.due})`); }
+    else { t.done = !t.done; stamp(t); commit(`${t.done ? "Completed" : "Reopened"} “${t.title}”`); }
+  }
+  else if (a === "task-del") { const t = find("tasks"); kill(t); commit(`Deleted to-do “${t.title}”`); }
+  else if (a === "event-del") { const t = find("events"); if (t.rep && !confirm("Delete this repeating event on every date?")) return; kill(t); commit(`Deleted event “${t.title}”`); }
+  else if (a === "bill-paid") {
+    const x = find("bills"), d = b.dataset.d; x.paid ||= {}; const key = x.id + "|" + d;
+    if (x.paid[d]) { delete x.paid[d]; S.expenses.filter(z => z.link === key && !z.del).forEach(kill); stamp(x); commit(`Unmarked “${x.title}” paid`); }
+    else { x.paid[d] = true; stamp(x); S.expenses.push(stamp({ id: uid(), amount: x.amount, cat: "Bills", who: x.who || DEVICE.actor, date: today(), note: x.title, link: key })); commit(`Paid ${x.title} ${money(x.amount)}`); }
+  }
+  else if (a === "bill-del") { const x = find("bills"); if (!confirm(`Delete bill “${x.title}”?`)) return; kill(x); commit(`Deleted bill “${x.title}”`); }
+  else if (a === "pick-list") { selList = id; render(); }
+  else if (a === "item-toggle") { const t = find("items"); t.done = !t.done; stamp(t); commit(); }
+  else if (a === "item-del") { kill(find("items")); commit(); }
+  else if (a === "items-clear") { const xs = L("items").filter(i => i.list === selList && i.done); xs.forEach(kill); commit(xs.length ? `Cleared ${xs.length} item(s)` : ""); }
+  else if (a === "items-reset") { L("items").filter(i => i.list === selList && i.done).forEach(i => { i.done = false; stamp(i); }); commit(); }
+  else if (a === "list-share") { const l = S.lists.find(x => x.id === selList); const xs = L("items").filter(i => i.list === selList && !i.done); shareText(`${l.name}:\n` + (xs.length ? xs.map(i => `• ${i.title}${i.qty ? " × " + i.qty : ""}`).join("\n") : "(nothing left)")); }
+  else if (a === "list-del") {
+    const l = S.lists.find(x => x.id === selList);
+    if (L("lists").length < 2) return alert("Keep at least one list.");
+    if (!confirm(`Delete “${l.name}” and its items?`)) return;
+    kill(l); L("items").filter(i => i.list === l.id).forEach(kill); selList = null; commit(`Deleted list “${l.name}”`);
+  }
+  else if (a === "exp-del") { kill(find("expenses")); commit("Deleted an expense"); }
+  else if (a === "tpl") { const ta = document.querySelector("form[data-form=post] textarea"); ta.value = b.dataset.t; ta.focus(); const i = ta.value.indexOf("___"); if (i >= 0) ta.setSelectionRange(i, i + 3); }
+  else if (a === "ack") { const p = find("posts"); p.acks ||= {}; p.acks[DEVICE.actor] = true; stamp(p); commit(); }
+  else if (a === "post-done") { const p = find("posts"); p.done = true; stamp(p); commit(); }
+  else if (a === "pin") { const p = find("posts"); p.pin = !p.pin; stamp(p); commit(); }
+  else if (a === "post-del") { kill(find("posts")); commit(); }
+  else if (a === "member-del") {
+    const m = find("members");
+    if (!confirm(`Remove ${m.name}? Past items stay but show as "Anyone".`)) return;
+    kill(m); for (const k of ["tasks","events","expenses","bills"]) S[k].forEach(x => { if (x.who === id) { x.who = ""; stamp(x); } });
+    if (DEVICE.actor === id) { DEVICE.actor = L("members")[0].id; saveDev(); }
+    commit(`Removed member ${m.name}`);
+  }
+  else if (a === "theme") { DEVICE.theme = id; saveDev(); render(); }
+  else if (a === "export") downloadBackup();
+  else if (a === "share-backup") shareBackup();
+  else if (a === "reset") { if (confirm("Erase ALL HomeBase data on this device?")) { S = blank(); ensureBasics(); DEVICE.actor = S.members[0].id; saveDev(); selList = null; commit(); } }
+});
+
+document.getElementById("view").addEventListener("change", e => {
+  const id = e.target.id; if (!["mergeFile", "importFile"].includes(id) || !e.target.files[0]) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if (id === "mergeFile") { const res = mergeData(d); commit(`Merged: ${res.added} new, ${res.updated} updated`); alert(`Merged. ${res.added} new, ${res.updated} updated.`); }
+      else { if (!confirm("Replace all current data with this backup?")) return; S = migrate(d); ensureBasics(); saveDev(); commit("Imported backup"); }
+    } catch (err) { alert("That file is not a HomeBase backup."); }
+  };
+  r.readAsText(e.target.files[0]);
+});
+
+loadAll(); save(); render();
+</script>
+</body>
+</html>
