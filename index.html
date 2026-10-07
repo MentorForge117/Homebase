@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="HomeBase">
+<meta name="apple-mobile-web-app-title" content="Ravenhold">
 <meta name="theme-color" content="#ffffff">
-<title>HomeBase</title>
+<title>Ravenhold</title>
 <style>
-:root,[data-theme=ocean]{--bg:#eef4f9;--card:#fff;--ink:#16263a;--mute:#66788d;--line:#dbe5ee;--accent:#2f6f9f;--accent-ink:#fff;--soft:#e3eef7;--warn:#c0472f;--ok:#2e7d4f}
-[data-theme=forest]{--bg:#eef5ef;--card:#fff;--ink:#17301f;--mute:#62786a;--line:#d9e7dc;--accent:#2f7d4f;--accent-ink:#fff;--soft:#e1f0e5;--warn:#b5472f;--ok:#2e7d4f}
-[data-theme=sunset]{--bg:#fbf1ea;--card:#fffaf6;--ink:#35211a;--mute:#8a6a5c;--line:#f0dccf;--accent:#d2663a;--accent-ink:#fff;--soft:#fbe5d8;--warn:#b02e2e;--ok:#2e7d4f}
-[data-theme=lavender]{--bg:#f3f0fa;--card:#fff;--ink:#241d3a;--mute:#74698f;--line:#e2dcf0;--accent:#6c4fb3;--accent-ink:#fff;--soft:#e9e3f7;--warn:#b5472f;--ok:#2e7d4f}
-[data-theme=slate]{--bg:#14181f;--card:#1d232d;--ink:#e8ecf3;--mute:#98a2b5;--line:#2c3441;--accent:#7aa7d9;--accent-ink:#0e1218;--soft:#27303d;--warn:#ee8a76;--ok:#6fcf97}
-[data-theme=midnight]{--bg:#0b1220;--card:#121b2e;--ink:#e6f0ff;--mute:#8ea3c4;--line:#1f2d47;--accent:#3fc1c9;--accent-ink:#06151a;--soft:#18253f;--warn:#ff8e7a;--ok:#6fcf97}
+:root,[data-theme=ocean]{--bg:#d9e5ef;--card:#f4f8fb;--ink:#10243a;--mute:#5b6f86;--line:#bfd1e0;--accent:#1d5a8a;--accent-ink:#fff;--soft:#cddfec;--warn:#b5402a;--ok:#2e7d4f}
+[data-theme=forest]{--bg:#d8e3d2;--card:#f3f6ee;--ink:#1a2d1b;--mute:#5d725c;--line:#bdd0b6;--accent:#2d6636;--accent-ink:#fff;--soft:#cbdcc3;--warn:#b5402a;--ok:#2d6636}
+[data-theme=sunset]{--bg:#efdcc5;--card:#fcf4e8;--ink:#3a2314;--mute:#80614b;--line:#e0c4a4;--accent:#a8461a;--accent-ink:#fff;--soft:#ecd3b6;--warn:#a3221c;--ok:#3f7a3a}
+[data-theme=lavender]{--bg:#0a1322;--card:#121f36;--ink:#e8f2ff;--mute:#93a8c8;--line:#22355a;--accent:#57dba3;--accent-ink:#04231a;--soft:#1a2b4a;--warn:#ff8e7a;--ok:#57dba3}
+[data-theme=slate]{--bg:#dcdad5;--card:#f2f0ec;--ink:#24221e;--mute:#6b6760;--line:#c6c2ba;--accent:#9a3324;--accent-ink:#fff;--soft:#e2ddd5;--warn:#9a3324;--ok:#3f6b3f}
+[data-theme=midnight]{--bg:#08080a;--card:#151518;--ink:#ececf1;--mute:#9b9ba6;--line:#2a2a30;--accent:#c7d0dc;--accent-ink:#0b0b0e;--soft:#212126;--warn:#ff8e7a;--ok:#6fcf97}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
 body{font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
@@ -91,7 +91,7 @@ details ol{padding-left:20px}
 </style>
 </head>
 <body>
-<header><h1 id="title">HomeBase</h1><select id="actor" aria-label="Who is using this phone"></select><button class="gear" id="gear" aria-label="Settings and help">⚙</button></header>
+<header><h1 id="title">Ravenhold</h1><select id="actor" aria-label="Who is using this phone"></select><button class="gear" id="gear" aria-label="Settings and help">⚙</button></header>
 <main id="view"></main>
 <nav class="tabbar" id="tabs"></nav>
 
@@ -102,7 +102,7 @@ const KEY = "homebase.v1", DEV = "homebase.device", SCHEMA = 3;
 const COLORS = ["#2f6f9f","#c0472f","#2f7d4f","#a8742f","#6c4fb3","#2f8a86","#b34f7a","#6b7a2f"];
 const CATS = { Family: "#2f7d4f", Work: "#2f6f9f", School: "#a8742f", Appointment: "#b34f7a", Other: "#6b7a8f" };
 const REPS = [["", "Does not repeat"], ["daily", "Daily"], ["weekly", "Weekly"], ["monthly", "Monthly"], ["yearly", "Yearly"]];
-const THEMES = [["ocean","Ocean","#2f6f9f"],["forest","Forest","#2f7d4f"],["sunset","Sunset","#d2663a"],["lavender","Lavender","#6c4fb3"],["slate","Slate","#7aa7d9"],["midnight","Midnight","#3fc1c9"]];
+const THEMES = [["ocean","Fjord","#1d5a8a","#d9e5ef"],["forest","Yggdrasil","#2d6636","#d8e3d2"],["sunset","Ember","#a8461a","#efdcc5"],["slate","Runestone","#9a3324","#dcdad5"],["lavender","Aurora","#57dba3","#0a1322"],["midnight","Raven","#c7d0dc","#08080a"]];
 const COLL = ["members","tasks","events","lists","items","expenses","bills","posts"];
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 const ymd = d => d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
@@ -215,11 +215,11 @@ async function shareText(text) {
 function backupBlob() { return new Blob([JSON.stringify(S, null, 2)], { type: "application/json" }); }
 function downloadBackup() {
   const link = document.createElement("a"); link.href = URL.createObjectURL(backupBlob());
-  link.download = `homebase-backup-${today()}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  link.download = `ravenhold-backup-${today()}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 }
 async function shareBackup() {
-  const f = new File([backupBlob()], `homebase-${today()}.json`, { type: "application/json" });
-  if (navigator.canShare?.({ files: [f] })) { try { await navigator.share({ files: [f], title: "HomeBase update" }); return; } catch (e) { if (e.name === "AbortError") return; } }
+  const f = new File([backupBlob()], `ravenhold-${today()}.json`, { type: "application/json" });
+  if (navigator.canShare?.({ files: [f] })) { try { await navigator.share({ files: [f], title: "Ravenhold update" }); return; } catch (e) { if (e.name === "AbortError") return; } }
   downloadBackup();
 }
 
@@ -413,13 +413,13 @@ const HELP = `
 <p>A file saved on a phone is awkward to reopen and some phones clear its data. A link to the app works the same on every device. The app contains no personal data. Your household data stays on each device.</p></details>
 <details><summary>Android phone or tablet (Chrome)</summary><ol><li>Open the link in Chrome.</li><li>Tap the ⋮ menu.</li><li>Tap Add to Home screen (or Install app).</li><li>Open it from the new icon. Pick who you are from the menu at the top.</li></ol></details>
 <details><summary>iPhone or iPad (Safari)</summary><ol><li>Open the link in Safari.</li><li>Tap the Share button.</li><li>Tap Add to Home Screen, then Add.</li><li>Always open it from the home screen icon. Set up your household there, not in a Safari tab, because the two keep separate data.</li></ol></details>
-<details><summary>Laptop (Chrome, Edge, Firefox, Safari)</summary><ol><li>Open the link, or double-click the homebase.html file.</li><li>Do not use a private or incognito window; it forgets everything.</li><li>Bookmark it. Chrome and Edge can also Install it from the address bar.</li></ol></details>
+<details><summary>Laptop (Chrome, Edge, Firefox, Safari)</summary><ol><li>Open the link, or double-click the index.html file.</li><li>Do not use a private or incognito window; it forgets everything.</li><li>Bookmark it. Chrome and Edge can also Install it from the address bar.</li></ol></details>
 <details><summary>Keeping data safe</summary><p>Data lives in the browser on that device. Clearing browsing data erases it. Export a backup now and then.</p></details>
 <details><summary>Sharing between phones</summary><ol><li>On one phone, tap Send my changes and pick a message app.</li><li>On the other phone, open the file and choose it under Merge, or save it and use Merge from file.</li><li>Both phones end up with the newest version of each item.</li></ol></details>`;
 
 function vMore() {
   const act = S.activity.slice(0, 15);
-  return `<div class="card"><h2>Theme (this device)</h2><div class="themes">${THEMES.map(([id, n, c]) => `<button class="theme ${DEVICE.theme === id ? "on" : ""}" data-act="theme" data-id="${id}"><i style="background:${c}"></i>${n}</button>`).join("")}</div></div>
+  return `<div class="card"><h2>Theme (this device)</h2><div class="themes">${THEMES.map(([id, n, c, b]) => `<button class="theme ${DEVICE.theme === id ? "on" : ""}" data-act="theme" data-id="${id}"><i style="background:linear-gradient(90deg,${b} 50%,${c} 50%);border:1px solid var(--line)"></i>${n}</button>`).join("")}</div></div>
   <div class="card"><h2>Household</h2>
     <form class="row" data-form="hhname"><input class="grow" type="text" name="name" value="${esc(S.household.name)}" required><button class="btn ghost">Rename</button></form>
     <form class="row" data-form="member"><input class="grow" type="text" name="name" placeholder="Add a member" required><button class="btn">Add</button></form>
@@ -523,7 +523,7 @@ document.getElementById("view").addEventListener("click", e => {
   else if (a === "theme") { DEVICE.theme = id; saveDev(); render(); }
   else if (a === "export") downloadBackup();
   else if (a === "share-backup") shareBackup();
-  else if (a === "reset") { if (confirm("Erase ALL HomeBase data on this device?")) { S = blank(); ensureBasics(); DEVICE.actor = S.members[0].id; saveDev(); selList = null; commit(); } }
+  else if (a === "reset") { if (confirm("Erase ALL Ravenhold data on this device?")) { S = blank(); ensureBasics(); DEVICE.actor = S.members[0].id; saveDev(); selList = null; commit(); } }
 });
 
 document.getElementById("view").addEventListener("change", e => {
@@ -534,7 +534,7 @@ document.getElementById("view").addEventListener("change", e => {
       const d = JSON.parse(r.result);
       if (id === "mergeFile") { const res = mergeData(d); commit(`Merged: ${res.added} new, ${res.updated} updated`); alert(`Merged. ${res.added} new, ${res.updated} updated.`); }
       else { if (!confirm("Replace all current data with this backup?")) return; S = migrate(d); ensureBasics(); saveDev(); commit("Imported backup"); }
-    } catch (err) { alert("That file is not a HomeBase backup."); }
+    } catch (err) { alert("That file is not a Ravenhold backup."); }
   };
   r.readAsText(e.target.files[0]);
 });
